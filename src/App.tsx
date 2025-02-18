@@ -1,8 +1,12 @@
+import Layout from './components/Layout';
+
 function App() {
   return (
-    <>
-      <header>헤더</header>
-    </>
+    <Layout>
+      <div className="flex-1">
+        <strong>캠페인 관리</strong>
+      </div>
+    </Layout>
   );
 }
 
