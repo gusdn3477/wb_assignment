@@ -1,32 +1,34 @@
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import Button from './Button';
+import Input from './Input';
 
 interface ModalProps {
-  isOpen: boolean;
+  open: boolean;
   onClose: () => void;
   isEdit?: boolean;
 }
 
-const SignupModal = ({ isOpen, onClose, isEdit = false }: ModalProps) => {
+const SignupModal = ({ open, onClose, isEdit = false }: ModalProps) => {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [repeatPassword, setRepeatPassword] = useState('');
   const [name, setName] = useState('');
 
   const handleIdChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setUserId(e.target.value);
   }, []);
 
-  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handlePasswordChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
-  };
+  }, []);
 
-  const handleConfirmPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setConfirmPassword(e.target.validationMessage);
-  };
+  const handlerepeatPasswordChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setRepeatPassword(e.target.value);
+  }, []);
 
-  const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleNameChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
-  };
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,61 +39,72 @@ const SignupModal = ({ isOpen, onClose, isEdit = false }: ModalProps) => {
       if (event.key === 'Escape') onClose();
     };
 
-    if (isOpen) {
+    if (open) {
       document.addEventListener('keydown', handleKeyDown);
     } else {
       document.removeEventListener('keydown', handleKeyDown);
     }
 
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  }, [open, onClose]);
 
   // 모달이 열려있지 않다면 렌더링하지 않음
-  if (!isOpen) return null;
+  if (!open) return null;
 
   return (
     <div
-      className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black"
+      className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/50"
       onClick={onClose} // 바깥쪽 클릭하면 닫힘
     >
       <div
-        className="relative w-96 rounded-lg bg-white p-6 shadow-lg"
+        className="relative h-[480px] w-[540px] rounded-lg bg-white p-6 shadow-lg"
         onClick={(e) => e.stopPropagation()} // 내부 클릭 시 닫히지 않도록 막음
       >
         {/* 닫기 버튼 */}
         <button className="absolute top-3 right-3 text-gray-500 hover:text-black" onClick={onClose}>
           ✕
         </button>
-        <form onSubmit={handleSubmit} className="modal-content">
-          <h2>회원 가입</h2>
-          {isEdit ? (
-            <input
+        <form onSubmit={handleSubmit} className="flex h-full flex-col">
+          <div className="flex-1">
+            <h2>사용자 생성</h2>
+            <Input
               name="userId"
-              placeholder="아이디"
               value={userId}
               onChange={handleIdChange}
-              disabled
+              labelText="아이디"
+              disabled={isEdit}
             />
-          ) : (
-            <input name="userId" placeholder="아이디" value={userId} onChange={handleIdChange} />
-          )}
+            <Input
+              type="password"
+              name="password"
+              labelText="비밀번호"
+              placeholder="영문, 숫자, 특수문자 포함 8~15자"
+              value={password}
+              onChange={handlePasswordChange}
+              className="mt-4"
+            />
 
-          <input
-            type="password"
-            name="password"
-            placeholder="비밀번호"
-            value={password}
-            onChange={handlePasswordChange}
-          />
-          <input
-            type="password"
-            name="confirmPassword"
-            placeholder="비밀번호 확인"
-            value={confirmPassword}
-            onChange={handleConfirmPasswordChange}
-          />
-          <input name="name" placeholder="이름" value={name} onChange={handleNameChange} />
-          <button type="submit">가입하기</button>
+            <Input
+              type="password"
+              name="repeatPassword"
+              labelText="비밀번호 확인"
+              value={repeatPassword}
+              onChange={handlerepeatPasswordChange}
+              className="mt-4"
+            />
+
+            <Input
+              name="name"
+              labelText="이름"
+              value={name}
+              onChange={handleNameChange}
+              className="mt-4"
+            />
+          </div>
+          <div className="flex h-12 w-full items-center justify-center">
+            <Button variant="secondary" text="취소" onClick={() => alert('취소')} />
+            <Button variant="primary" text="생성" onClick={() => alert('확인')} />
+          </div>
         </form>
       </div>
     </div>
