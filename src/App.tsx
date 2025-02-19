@@ -1,13 +1,5 @@
-import Layout from './components/Layout';
+import Router from './Router';
 
-function App() {
-  return (
-    <Layout>
-      <div className="flex-1">
-        <strong>캠페인 관리</strong>
-      </div>
-    </Layout>
-  );
+export default function App() {
+  return <Router />;
 }
-
-export default App;
