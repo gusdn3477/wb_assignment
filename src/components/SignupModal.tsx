@@ -78,7 +78,7 @@ const SignupModal = ({ open, onClose, isEdit = false }: ModalProps) => {
         </button>
         <form onSubmit={handleSubmit} className="flex h-full flex-col">
           <div className="flex-1">
-            <h2 className="mb-4 text-xl font-bold">사용자 생성</h2>
+            <h2 className="mb-4 text-xl font-bold">{isEdit ? '사용자 수정' : '사용자 생성'}</h2>
             <Input
               name="userId"
               value={userId}
