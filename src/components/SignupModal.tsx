@@ -14,6 +14,13 @@ const SignupModal = ({ open, onClose, isEdit = false }: ModalProps) => {
   const [repeatPassword, setRepeatPassword] = useState('');
   const [name, setName] = useState('');
 
+  const init = () => {
+    setUserId('');
+    setPassword('');
+    setRepeatPassword('');
+    setName('');
+  };
+
   const handleIdChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setUserId(e.target.value);
   }, []);
@@ -28,6 +35,11 @@ const SignupModal = ({ open, onClose, isEdit = false }: ModalProps) => {
 
   const handleNameChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
+  }, []);
+
+  const handleModalClose = useCallback(() => {
+    init();
+    onClose();
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -66,13 +78,14 @@ const SignupModal = ({ open, onClose, isEdit = false }: ModalProps) => {
         </button>
         <form onSubmit={handleSubmit} className="flex h-full flex-col">
           <div className="flex-1">
-            <h2>사용자 생성</h2>
+            <h2 className="mb-4 text-xl font-bold">사용자 생성</h2>
             <Input
               name="userId"
               value={userId}
               onChange={handleIdChange}
               labelText="아이디"
               disabled={isEdit}
+              required
             />
             <Input
               type="password"
@@ -82,6 +95,7 @@ const SignupModal = ({ open, onClose, isEdit = false }: ModalProps) => {
               value={password}
               onChange={handlePasswordChange}
               className="mt-4"
+              required
             />
 
             <Input
@@ -91,6 +105,7 @@ const SignupModal = ({ open, onClose, isEdit = false }: ModalProps) => {
               value={repeatPassword}
               onChange={handlerepeatPasswordChange}
               className="mt-4"
+              required
             />
 
             <Input
@@ -99,10 +114,11 @@ const SignupModal = ({ open, onClose, isEdit = false }: ModalProps) => {
               value={name}
               onChange={handleNameChange}
               className="mt-4"
+              required
             />
           </div>
           <div className="flex h-12 w-full items-center justify-center">
-            <Button variant="secondary" text="취소" onClick={() => alert('취소')} />
+            <Button variant="secondary" text="취소" onClick={handleModalClose} />
             <Button variant="primary" text="생성" onClick={() => alert('확인')} />
           </div>
         </form>

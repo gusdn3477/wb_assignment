@@ -9,6 +9,7 @@ interface InputProps {
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   disabled?: boolean;
   className?: string;
+  required?: boolean;
 }
 export default function Input({
   type = 'text',
@@ -19,10 +20,15 @@ export default function Input({
   onChange,
   disabled,
   className,
+  required = false,
 }: InputProps) {
   return (
     <div className={`flex flex-col ${className}`}>
-      {labelText && <label htmlFor={name}>{labelText}</label>}
+      {labelText && (
+        <label htmlFor={name}>
+          {labelText} {required && <span className="mb-3.5 text-red-600">*</span>}
+        </label>
+      )}
       <input
         type={type}
         name={name}
