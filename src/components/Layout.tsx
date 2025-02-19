@@ -41,9 +41,9 @@ export default function Layout() {
 
   return (
     <>
-      <header className="flex h-[60px] w-full items-center justify-between bg-blue-400 p-2 text-white">
+      <header className="flex h-[60px] w-full items-center justify-between bg-blue-400 px-2 text-white">
         <div className="flex h-full flex-1 items-center">
-          <h1>Wisebird</h1>
+          <h1>Wisebirds</h1>
           <ul className="flex h-full">
             {navItems.map((item) => (
               <li
