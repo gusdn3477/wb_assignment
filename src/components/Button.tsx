@@ -16,7 +16,7 @@ export default function Button({ text, variant = 'primary', className, onClick }
   return (
     <button
       type="button"
-      className={`${getClassName()} h-12 w-16 rounded-md ${className}`}
+      className={`${getClassName()} h-10 w-16 rounded-md ${className}`}
       onClick={onClick}
     >
       {text}
