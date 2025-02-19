@@ -69,7 +69,7 @@ const SignupModal = ({ open, onClose, isEdit = false }: ModalProps) => {
       onClick={onClose} // 바깥쪽 클릭하면 닫힘
     >
       <div
-        className="relative h-[480px] w-[540px] rounded-lg bg-white p-6 shadow-lg"
+        className="relative w-[540px] rounded-lg bg-white p-6 shadow-lg"
         onClick={(e) => e.stopPropagation()} // 내부 클릭 시 닫히지 않도록 막음
       >
         {/* 닫기 버튼 */}
@@ -117,9 +117,15 @@ const SignupModal = ({ open, onClose, isEdit = false }: ModalProps) => {
               required
             />
           </div>
-          <div className="flex h-12 w-full items-center justify-center">
-            <Button variant="secondary" text="취소" onClick={handleModalClose} />
-            <Button variant="primary" text="생성" onClick={() => alert('확인')} />
+          <div className="flex h-20 w-full items-center justify-center">
+            <div className="flex w-[140px] justify-between">
+              <Button variant="secondary" text="취소" onClick={handleModalClose} />
+              <Button
+                variant="primary"
+                text={isEdit ? '저장' : '생성'}
+                onClick={() => alert('확인')}
+              />
+            </div>
           </div>
         </form>
       </div>
