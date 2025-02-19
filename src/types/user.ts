@@ -1,3 +1,10 @@
+export interface CreateUserParams {
+  name: string;
+  email: string;
+  password: string;
+  repeat_password: string;
+}
+
 export interface User {
   id: number;
   email: string;
