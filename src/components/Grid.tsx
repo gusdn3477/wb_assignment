@@ -1,8 +1,7 @@
-import Switch from './Switch';
-
 export interface Column<T> {
   key: keyof T;
   label: string;
+  render?: (row: T) => React.ReactNode; // ✅ 특정 컬럼만 커스텀 렌더링 가능
 }
 
 interface GridProps<T> {
@@ -11,6 +10,10 @@ interface GridProps<T> {
 }
 
 const Grid = <T,>({ data, columns }: GridProps<T>) => {
+  const renderCell = (col: Column<T>, row: T) => {
+    return col.render ? col.render(row) : String(row[col.key]);
+  };
+
   return (
     <div className="overflow-x-auto rounded-lg border border-gray-300 shadow">
       <table className="min-w-full divide-y divide-gray-200">
@@ -28,11 +31,7 @@ const Grid = <T,>({ data, columns }: GridProps<T>) => {
             <tr key={rowIndex} className="hover:bg-gray-50">
               {columns.map((col) => (
                 <td key={String(col.key)} className="px-4 py-2">
-                  {col.key === 'enabled' ? (
-                    <Switch checked={!!row[col.key]} onChange={() => {}} />
-                  ) : (
-                    String(row[col.key])
-                  )}
+                  {renderCell(col, row)}
                 </td>
               ))}
             </tr>
