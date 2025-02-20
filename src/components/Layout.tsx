@@ -1,6 +1,7 @@
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { NAV_PATH, ROLE } from '@/constants';
 import { options } from '../data/options';
+import ProfileMenu from './ProfileMenu';
 import Select from './Select';
 
 type RoleType = (typeof ROLE)[keyof typeof ROLE];
@@ -40,8 +41,8 @@ export default function Layout() {
     return navItems.filter((item) => item.path === NAV_PATH.COMPAIGNS);
   };
   return (
-    <>
-      <header className="flex h-[60px] w-full items-center justify-between bg-blue-400 px-2 text-white">
+    <div className="flex h-full flex-col">
+      <header className="flex min-h-[60px] w-full items-center justify-between bg-blue-400 px-2 text-white">
         <div className="flex h-full flex-1 items-center">
           <h1>Wisebirds</h1>
           <ul className="ml-2 flex h-full">
@@ -58,16 +59,18 @@ export default function Layout() {
         </div>
         <div className="flex flex-1 justify-end">
           <ul className="flex items-center">
-            <li>abc@abc.co.kr</li>
+            <li>
+              <ProfileMenu />
+            </li>
             <li className="ml-4">
               <Select options={options} defaultValue={role} onChange={handleSelectChange} />
             </li>
           </ul>
         </div>
       </header>
-      <div className="flex-1 p-2">
+      <div className="flex flex-1 flex-col p-2">
         <Outlet />
       </div>
-    </>
+    </div>
   );
 }
