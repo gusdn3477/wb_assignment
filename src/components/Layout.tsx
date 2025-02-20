@@ -8,18 +8,23 @@ const ROLE = {
   VIEWER: 'viewer',
 } as const;
 
+const NAV_PATH = {
+  COMPAIGNS: 'campaigns',
+  USERS: 'users',
+} as const;
+
 type RoleType = (typeof ROLE)[keyof typeof ROLE];
 
 const navItems = [
   {
     id: 1,
     value: '캠페인',
-    path: 'campaigns',
+    path: NAV_PATH.COMPAIGNS,
   },
   {
     id: 2,
     value: '사용자',
-    path: 'users',
+    path: NAV_PATH.USERS,
   },
 ];
 
@@ -30,8 +35,7 @@ export default function Layout() {
   const currentPage = location.pathname.split('/')[2];
 
   const handleSelectChange = (value: string) => {
-    const newPath = location.pathname.replace(/^\/(admin|manager|viewer)/, `/${value}`);
-    navigate(newPath);
+    navigate(`/${value}/${NAV_PATH.COMPAIGNS}`);
   };
 
   const handleCategoryClick = (path: string) => {
@@ -39,17 +43,23 @@ export default function Layout() {
     navigate(newPath);
   };
 
+  const getNavItems = () => {
+    if (role === ROLE.ADMIN) {
+      return [...navItems];
+    }
+    return navItems.filter((item) => item.path === NAV_PATH.COMPAIGNS);
+  };
   return (
     <>
       <header className="flex h-[60px] w-full items-center justify-between bg-blue-400 px-2 text-white">
         <div className="flex h-full flex-1 items-center">
           <h1>Wisebirds</h1>
-          <ul className="flex h-full">
-            {navItems.map((item) => (
+          <ul className="ml-2 flex h-full">
+            {getNavItems().map((item) => (
               <li
                 key={item.id}
                 onClick={() => handleCategoryClick(item.path)}
-                className={`${item.path === currentPage ? 'bg-blue-700' : ''} flex items-center`}
+                className={`w-16 justify-center ${item.path === currentPage ? 'bg-blue-700' : ''} flex items-center`}
               >
                 {item.value}
               </li>
@@ -59,13 +69,13 @@ export default function Layout() {
         <div className="flex flex-1 justify-end">
           <ul className="flex items-center">
             <li>abc@abc.co.kr</li>
-            <li>
+            <li className="ml-4">
               <Select options={options} defaultValue={role} onChange={handleSelectChange} />
             </li>
           </ul>
         </div>
       </header>
-      <div className="flex-1">
+      <div className="flex-1 p-2">
         <Outlet />
       </div>
     </>
