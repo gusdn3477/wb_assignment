@@ -1,17 +1,7 @@
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { NAV_PATH, ROLE } from '@/constants';
 import { options } from '../data/options';
 import Select from './Select';
-
-const ROLE = {
-  ADMIN: 'admin',
-  MANAGER: 'manager',
-  VIEWER: 'viewer',
-} as const;
-
-const NAV_PATH = {
-  COMPAIGNS: 'campaigns',
-  USERS: 'users',
-} as const;
 
 type RoleType = (typeof ROLE)[keyof typeof ROLE];
 
