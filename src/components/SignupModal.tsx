@@ -1,5 +1,8 @@
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { UserRepository } from '@/apis/UserRepository';
 import { User } from '@/types';
+import { useModalStore } from '@/store/useModalStore';
+import { emailRegex, nameRegex, passwordRegex } from '@/utils/regex';
 import Button from './Button';
 import Input from './Input';
 
@@ -11,25 +14,26 @@ interface ModalProps {
 }
 
 const SignupModal = ({ open, onClose, isEdit = false, user }: ModalProps) => {
-  const [userId, setUserId] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
   const [name, setName] = useState('');
 
-  const [userIdError, setUserIdError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
-  const [repeatPasswordError, setRepeatPasswordError] = useState(false);
-  const [nameError, setNameError] = useState(false);
+  const modalOpen = useModalStore((state) => state.handleOpen);
+
+  const nameError = name.length > 0 && !nameRegex.test(name);
+  const passwordError = password.length > 0 && !passwordRegex.test(password);
+  const emailError = email.length > 0 && !emailRegex.test(email);
 
   const init = () => {
-    setUserId('');
+    setEmail('');
     setPassword('');
     setRepeatPassword('');
     setName('');
   };
 
-  const handleIdChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setUserId(e.target.value);
+  const handleEmailChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
   }, []);
 
   const handlePasswordChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -49,11 +53,31 @@ const SignupModal = ({ open, onClose, isEdit = false, user }: ModalProps) => {
     onClose();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isEdit) {
-      // 수정 함수 호출
+  const handleSubmit = async () => {
+    if (!isEdit) {
+      const response = await UserRepository.create({
+        name,
+        email,
+        password,
+        repeat_password: repeatPassword,
+      });
+
+      if (response?.result === true) {
+        alert('회원가입 성공!');
+      } else {
+        modalOpen('error');
+      }
     } else {
+      const response = await UserRepository.patch({
+        id: user?.id as number,
+        name: name,
+      });
+
+      if (response?.result === true) {
+        alert('회원 수정 성공!');
+      } else {
+        modalOpen('error');
+      }
     }
   };
   // ESC 키로 모달 닫기
@@ -90,22 +114,18 @@ const SignupModal = ({ open, onClose, isEdit = false, user }: ModalProps) => {
         >
           ✕
         </button>
-        <form onSubmit={handleSubmit} className="flex h-full flex-col">
+        <form className="flex h-full flex-col">
           <div className="flex-1">
             <h2 className="mb-4 text-xl font-bold">{isEdit ? '사용자 수정' : '사용자 생성'}</h2>
             <Input
               name="userId"
-              value={isEdit ? (user?.email as string) : userId}
-              onChange={handleIdChange}
+              value={isEdit ? (user?.email as string) : email}
+              onChange={handleEmailChange}
               labelText="아이디"
               disabled={isEdit}
               required
-              error={userIdError}
-              errorMessage={
-                userId.length === 0
-                  ? '아이디(이메일)을 입력하세요.'
-                  : '올바른 이메일 주소를 입력하세요.'
-              }
+              error={emailError}
+              errorMessage={'올바른 이메일 주소를 입력하세요.'}
             />
             {!isEdit && (
               <>
@@ -117,6 +137,8 @@ const SignupModal = ({ open, onClose, isEdit = false, user }: ModalProps) => {
                   value={password}
                   onChange={handlePasswordChange}
                   className="mt-4"
+                  error={passwordError}
+                  errorMessage="8~15자 영문, 숫자, 특수문자를 사용하세요."
                   required
                 />
                 <Input
@@ -127,12 +149,8 @@ const SignupModal = ({ open, onClose, isEdit = false, user }: ModalProps) => {
                   onChange={handlerepeatPasswordChange}
                   className="mt-4"
                   required
-                  error={password !== repeatPassword}
-                  errorMessage={
-                    repeatPassword.length === 0
-                      ? '비밀번호를 입력하세요.'
-                      : '비밀번호가 일치하지 않습니다.'
-                  }
+                  error={repeatPassword.length > 0 && password !== repeatPassword}
+                  errorMessage={'비밀번호가 일치하지 않습니다.'}
                 />
               </>
             )}
@@ -145,17 +163,13 @@ const SignupModal = ({ open, onClose, isEdit = false, user }: ModalProps) => {
               className="mt-4"
               required
               error={nameError}
-              errorMessage={name.length === 0 ? '이름을 입력하세요' : '이름을 올바르게 입력하세요'}
+              errorMessage={'이름을 올바르게 입력하세요'}
             />
           </div>
           <div className="flex h-20 w-full items-center justify-center">
             <div className="flex w-[140px] justify-between">
               <Button variant="secondary" text="취소" onClick={handleModalClose} />
-              <Button
-                variant="primary"
-                text={isEdit ? '저장' : '생성'}
-                onClick={() => alert('확인')}
-              />
+              <Button variant="primary" text={isEdit ? '저장' : '생성'} onClick={handleSubmit} />
             </div>
           </div>
         </form>
