@@ -19,6 +19,7 @@ export default function UserManagement() {
   const [editMode, setEditMode] = useState(false);
   const startIndex = (currentPage - 1) * SIZE;
   const selectedData = data.slice(startIndex, startIndex + SIZE);
+  const [selectedUser, setSelectedUser] = useState<User>();
 
   const columns: Column<User>[] = [
     { key: 'id', label: '번호', hidden: true },
@@ -37,7 +38,7 @@ export default function UserManagement() {
           <button
             className="rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600"
             onClick={() => {
-              handleEdit(row.id);
+              handleEdit(row);
             }}
           >
             수정
@@ -52,9 +53,10 @@ export default function UserManagement() {
     setCurrentPage(id);
   }, []);
 
-  const handleEdit = useCallback((id: number) => {
+  const handleEdit = useCallback((user: User) => {
     setEditMode(true);
     setModalOpen('signup');
+    setSelectedUser(user);
   }, []);
 
   const handleModalOpen = useCallback(() => {
@@ -77,7 +79,12 @@ export default function UserManagement() {
         onPageChange={handlePageChange}
         className="flex h-16 items-center justify-center"
       />
-      <SignupModal open={modalOpen} onClose={handleModalClose} isEdit={editMode} />
+      <SignupModal
+        open={modalOpen}
+        onClose={handleModalClose}
+        isEdit={editMode}
+        user={selectedUser}
+      />
     </div>
   );
 }
