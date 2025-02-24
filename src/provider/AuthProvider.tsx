@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AuthUser } from '@/types';
-import { useMyInfoStore } from '@/store/MyInfoStore';
+import { useMyInfoStore } from '@/store/useMyInfoStore';
 
 interface AuthProviderProps {
   children: React.ReactNode;
