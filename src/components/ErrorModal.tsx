@@ -20,7 +20,8 @@ const ErrorModal = ({ open, onClose }: ModalProps) => {
           같은 현상이 반복되면 고객센터에 문의 바랍니다.
         </p>
 
-        <p className="mt-4">고객센터 이메일</p>
+        <p className="mt-4">* 고객센터 이메일</p>
+        <p>- email: helpdesk@wisebirds.ai</p>
         <div className="flex h-16 w-full items-end justify-end">
           <Button variant="primary" text={'확인'} onClick={onClose} />
         </div>
