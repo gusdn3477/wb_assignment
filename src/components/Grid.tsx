@@ -1,6 +1,7 @@
 export interface Column<T> {
   key: keyof T;
   label: string;
+  hidden?: boolean;
   render?: (row: T) => React.ReactNode; // ✅ 특정 컬럼만 커스텀 렌더링 가능
   renderHeader?: () => React.ReactNode; // ✅ 특정 컬럼 헤더도 커스텀 렌더링 가능
 }
@@ -11,6 +12,8 @@ interface GridProps<T> {
 }
 
 const Grid = <T,>({ data, columns }: GridProps<T>) => {
+  const visibleColumns = columns.filter((col) => !col.hidden); // 🔥 hidden=false인 컬럼만 렌더링
+
   const renderCell = (col: Column<T>, row: T) => {
     return col.render ? col.render(row) : String(row[col.key]);
   };
@@ -20,7 +23,7 @@ const Grid = <T,>({ data, columns }: GridProps<T>) => {
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-100">
           <tr>
-            {columns.map((col) => (
+            {visibleColumns.map((col) => (
               <th key={String(col.key)} className="px-4 py-2 text-left font-medium text-gray-700">
                 {col.renderHeader ? col.renderHeader() : col.label}
               </th>
@@ -30,7 +33,7 @@ const Grid = <T,>({ data, columns }: GridProps<T>) => {
         <tbody className="divide-y divide-gray-200">
           {data.map((row, rowIndex) => (
             <tr key={rowIndex} className="hover:bg-gray-50">
-              {columns.map((col) => (
+              {visibleColumns.map((col) => (
                 <td key={String(col.key)} className="truncate px-4 py-2">
                   {renderCell(col, row)}
                 </td>

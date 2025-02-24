@@ -25,7 +25,7 @@ export default function CampaignManagament() {
   };
 
   const columns: Column<Campaign>[] = [
-    { key: 'id', label: '번호' },
+    { key: 'id', label: '번호', hidden: true },
     {
       key: 'enabled',
       label: '상태',
