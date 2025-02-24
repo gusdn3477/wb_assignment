@@ -10,6 +10,7 @@ export interface User {
   email: string;
   name: string;
   last_login_at: string; // ISO 8601 날짜 문자열
+  edit?: string;
 }
 
 interface Sort {

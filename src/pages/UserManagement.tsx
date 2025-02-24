@@ -1,97 +1,83 @@
 import { useCallback, useState } from 'react';
-import { Campaign } from '@/types';
+import users from '@/data/Users';
+import { User } from '@/types';
+import { useModalStore } from '@/store/useModalStore';
+import { formatDate } from '@/utils/formatDate';
 import Button from '@/components/Button';
 import Grid, { Column } from '@/components/Grid';
+import Pagination from '@/component\s/Pagination';
 import SignupModal from '@/components/SignupModal';
 
-const data: Campaign[] = [
-  {
-    id: 1,
-    enabled: true,
-    name: 'Black Friday Sale',
-    campaign_objective: 'WEBSITE_CONVERSIONS',
-    impressions: 500000,
-    clicks: 25000,
-    ctr: 5.0,
-    video_views: 100000,
-    vtr: 20.0,
-  },
-  {
-    id: 2,
-    enabled: false,
-    name: 'New Year Promotion',
-    campaign_objective: 'LEAD',
-    impressions: 300000,
-    clicks: 15000,
-    ctr: 5.0,
-    video_views: 50000,
-    vtr: 16.7,
-  },
-  {
-    id: 3,
-    enabled: true,
-    name: 'Summer Collection',
-    campaign_objective: 'BRAND',
-    impressions: 700000,
-    clicks: 35000,
-    ctr: 5.0,
-    video_views: 200000,
-    vtr: 28.6,
-  },
-  {
-    id: 4,
-    enabled: true,
-    name: 'Winter Special',
-    campaign_objective: 'VIDEO_VIEWS',
-    impressions: 200000,
-    clicks: 5000,
-    ctr: 2.5,
-    video_views: 40000,
-    vtr: 20.0,
-  },
-  {
-    id: 5,
-    enabled: false,
-    name: 'Spring Festival',
-    campaign_objective: 'SALES',
-    impressions: 600000,
-    clicks: 18000,
-    ctr: 3.0,
-    video_views: 120000,
-    vtr: 20.0,
-  },
-];
-
-const columns: Column<Campaign>[] = [
-  { key: 'id', label: '번호' },
-  { key: 'enabled', label: '상태' },
-  { key: 'name', label: '캠페인명' },
-  { key: 'campaign_objective', label: '캠페인 목적' },
-  { key: 'impressions', label: '노출수' },
-  { key: 'clicks', label: '클릭수' },
-  { key: 'ctr', label: 'CTR' },
-  { key: 'video_views', label: '동영상조회수' },
-  { key: 'vtr', label: 'VTR' },
-];
+const SIZE = 25;
 
 export default function UserManagement() {
-  const [modalOpen, setModalOpen] = useState(false);
+  const modalOpen = useModalStore((state) => state.visible.signup);
+  const setModalOpen = useModalStore((state) => state.handleOpen);
+  const setModalClose = useModalStore((state) => state.handleClose);
+  const [data, setData] = useState<User[]>(users);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [editMode, setEditMode] = useState(false);
+  const startIndex = (currentPage - 1) * SIZE;
+  const selectedData = data.slice(startIndex, startIndex + SIZE);
+
+  const columns: Column<User>[] = [
+    { key: 'id', label: '번호', hidden: true },
+    { key: 'email', label: '아이디' },
+    { key: 'name', label: '이름' },
+    {
+      key: 'last_login_at',
+      label: '마지막 로그인 일시',
+      render: (row) => <span>{formatDate(new Date(row.last_login_at))}</span>,
+    },
+    {
+      key: 'edit',
+      label: '수정',
+      render: (row) => (
+        <div className="flex items-center justify-center">
+          <button
+            className="rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600"
+            onClick={() => {
+              handleEdit(row.id);
+            }}
+          >
+            수정
+          </button>
+        </div>
+      ),
+      renderHeader: () => <div className="flex justify-center">{'상태'}</div>,
+    },
+  ];
+
+  const handlePageChange = useCallback((id: number) => {
+    setCurrentPage(id);
+  }, []);
+
+  const handleEdit = useCallback((id: number) => {
+    setEditMode(true);
+    setModalOpen('signup');
+  }, []);
 
   const handleModalOpen = useCallback(() => {
-    setModalOpen(true);
+    setEditMode(false);
+    setModalOpen('signup');
   }, []);
 
   const handleModalClose = useCallback(() => {
-    setModalOpen(false);
+    setModalClose('signup');
   }, []);
 
   return (
     <div>
       <h2>사용자 관리</h2>
       <Button text="생성" onClick={handleModalOpen} className="ml-2" />
-      <Grid data={data} columns={columns} />
-
-      <SignupModal open={modalOpen} onClose={handleModalClose} />
+      <Grid data={selectedData} columns={columns} />
+      <Pagination
+        currentPage={currentPage}
+        totalPages={Math.floor(data.length / 25)}
+        onPageChange={handlePageChange}
+        className="flex h-16 items-center justify-center"
+      />
+      <SignupModal open={modalOpen} onClose={handleModalClose} isEdit={editMode} />
     </div>
   );
 }
