@@ -1,9 +1,13 @@
 import { useCallback, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { campaignData } from '@/data/Campaigns';
 import { Campaign } from '@/types';
+import { ROLE } from '@/constants';
 import Grid, { Column } from '@/components/Grid';
 import Pagination from '@/components/Pagination';
 import Switch from '@/components/Switch';
+
+const SIZE = 25;
 
 export default function CampaignManagament() {
   const [data, setData] = useState<Campaign[]>(campaignData);
@@ -11,13 +15,23 @@ export default function CampaignManagament() {
   const handlePageChange = useCallback((id: number) => {
     setCurrentPage(id);
   }, []);
+  const { role } = useParams();
+
+  const startIndex = (currentPage - 1) * SIZE;
+  const selectedData = data.slice(startIndex, startIndex + SIZE);
+
+  const handleToggle = () => {
+    console.log('업데이트 함수');
+  };
 
   const columns: Column<Campaign>[] = [
     { key: 'id', label: '번호' },
     {
       key: 'enabled',
       label: '상태',
-      render: (row) => <Switch checked={row.enabled} onChange={() => {}} />,
+      render: (row) => (
+        <Switch checked={row.enabled} onChange={handleToggle} disabled={role === ROLE.VIEWER} />
+      ),
     },
     { key: 'name', label: '캠페인명' },
     { key: 'campaign_objective', label: '캠페인 목적' },
@@ -34,16 +48,16 @@ export default function CampaignManagament() {
 
   return (
     <>
-      <h2>캠페인 관리</h2>
-      <Grid data={data} columns={columns} />
-
-      <div className="flex h-16 items-center justify-center bg-red-300">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={Math.floor(data.length / 25)}
-          onPageChange={handlePageChange}
-        />
+      <h2 className="h-12">캠페인 관리</h2>
+      <div className="flex-1">
+        <Grid data={selectedData} columns={columns} />
       </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={Math.floor(data.length / 25)}
+        onPageChange={handlePageChange}
+        className="flex h-16 items-center justify-center"
+      />
     </>
   );
 }
