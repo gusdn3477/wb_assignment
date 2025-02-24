@@ -1,5 +1,5 @@
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useMyInfoStore } from '@/store/MyInfoStore';
+import { useMyInfoStore } from '@/store/useMyInfoStore';
 import { NAV_PATH, ROLE } from '@/constants';
 import { options } from '../data/options';
 import ProfileMenu from './ProfileMenu';
