@@ -2,6 +2,7 @@ export interface Column<T> {
   key: keyof T;
   label: string;
   render?: (row: T) => React.ReactNode; // ✅ 특정 컬럼만 커스텀 렌더링 가능
+  renderHeader?: () => React.ReactNode; // ✅ 특정 컬럼 헤더도 커스텀 렌더링 가능
 }
 
 interface GridProps<T> {
@@ -21,7 +22,7 @@ const Grid = <T,>({ data, columns }: GridProps<T>) => {
           <tr>
             {columns.map((col) => (
               <th key={String(col.key)} className="px-4 py-2 text-left font-medium text-gray-700">
-                {col.label}
+                {col.renderHeader ? col.renderHeader() : col.label}
               </th>
             ))}
           </tr>
@@ -30,7 +31,7 @@ const Grid = <T,>({ data, columns }: GridProps<T>) => {
           {data.map((row, rowIndex) => (
             <tr key={rowIndex} className="hover:bg-gray-50">
               {columns.map((col) => (
-                <td key={String(col.key)} className="px-4 py-2">
+                <td key={String(col.key)} className="truncate px-4 py-2">
                   {renderCell(col, row)}
                 </td>
               ))}

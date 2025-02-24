@@ -30,20 +30,38 @@ export default function CampaignManagament() {
       key: 'enabled',
       label: '상태',
       render: (row) => (
-        <Switch checked={row.enabled} onChange={handleToggle} disabled={role === ROLE.VIEWER} />
+        <div className="flex items-center justify-center">
+          <Switch checked={row.enabled} onChange={handleToggle} disabled={role === ROLE.VIEWER} />
+        </div>
       ),
+      renderHeader: () => <div className="flex items-center justify-center">{'상태'}</div>,
     },
     { key: 'name', label: '캠페인명' },
     { key: 'campaign_objective', label: '캠페인 목적' },
-    { key: 'impressions', label: '노출수', render: (row) => row.impressions.toLocaleString() },
-    { key: 'clicks', label: '클릭수', render: (row) => row.clicks.toLocaleString() },
-    { key: 'ctr', label: 'CTR', render: (row) => `${row.ctr}%` },
+    {
+      key: 'impressions',
+      label: '노출수',
+      render: (row) => <span className="flex justify-end">{row.impressions.toLocaleString()}</span>,
+      renderHeader: () => <span className="flex justify-end">{'노출 수'}</span>,
+    },
+    {
+      key: 'ctr',
+      label: 'CTR',
+      render: (row) => <span className="flex justify-end">{row.ctr}%</span>,
+      renderHeader: () => <span className="flex justify-end">{'ctr'}</span>,
+    },
     {
       key: 'video_views',
       label: '동영상조회수',
-      render: (row) => row.video_views.toLocaleString(),
+      render: (row) => <span className="flex justify-end">{row.video_views.toLocaleString()}</span>,
+      renderHeader: () => <span className="flex justify-end">{'동영상조회수'}</span>,
     },
-    { key: 'vtr', label: 'VTR', render: (row) => `${row.vtr}%` },
+    {
+      key: 'vtr',
+      label: 'VTR',
+      render: (row) => <span className="flex justify-end">{row.vtr}%</span>,
+      renderHeader: () => <span className="flex justify-end">{'VTR'}</span>,
+    },
   ];
 
   return (
