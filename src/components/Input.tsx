@@ -10,6 +10,8 @@ interface InputProps {
   disabled?: boolean;
   className?: string;
   required?: boolean;
+  error?: boolean;
+  errorMessage?: string;
 }
 export default function Input({
   type = 'text',
@@ -21,6 +23,8 @@ export default function Input({
   disabled,
   className,
   required = false,
+  error,
+  errorMessage,
 }: InputProps) {
   return (
     <div className={`flex flex-col ${className}`}>
@@ -36,8 +40,9 @@ export default function Input({
         value={value}
         onChange={onChange}
         disabled={disabled}
-        className={`h-8 w-7/10 rounded-md border`}
+        className={`h-8 w-7/10 ${disabled ? 'border-none' : 'rounded-md border'} `}
       />
+      {error && <span className="text-red-500">{errorMessage}</span>}
     </div>
   );
 }
