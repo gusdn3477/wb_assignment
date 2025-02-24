@@ -1,13 +1,13 @@
 interface SwitchProps {
   checked: boolean;
-  onChange: (checked: boolean) => void;
+  onChange: () => void;
   disabled?: boolean;
 }
 
 const Switch = ({ checked, onChange, disabled = false }: SwitchProps) => {
   const handleToggle = () => {
     if (disabled) return;
-    onChange(!checked);
+    onChange();
   };
 
   return (

@@ -20,8 +20,13 @@ export default function CampaignManagament() {
   const startIndex = (currentPage - 1) * SIZE;
   const selectedData = data.slice(startIndex, startIndex + SIZE);
 
-  const handleToggle = () => {
-    console.log('업데이트 함수');
+  const handleToggle = (id: number) => {
+    // CampaignRepository patch 함수 실행
+    setData((prevData) =>
+      prevData.map((campaign) =>
+        campaign.id === id ? { ...campaign, enabled: !campaign.enabled } : campaign
+      )
+    );
   };
 
   const columns: Column<Campaign>[] = [
@@ -31,7 +36,11 @@ export default function CampaignManagament() {
       label: '상태',
       render: (row) => (
         <div className="flex items-center justify-center">
-          <Switch checked={row.enabled} onChange={handleToggle} disabled={role === ROLE.VIEWER} />
+          <Switch
+            checked={row.enabled}
+            onChange={() => handleToggle(row.id)}
+            disabled={role === ROLE.VIEWER}
+          />
         </div>
       ),
       renderHeader: () => <div className="flex items-center justify-center">{'상태'}</div>,
