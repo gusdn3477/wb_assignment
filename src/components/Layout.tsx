@@ -1,4 +1,5 @@
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useMyInfoStore } from '@/store/MyInfoStore';
 import { NAV_PATH, ROLE } from '@/constants';
 import { options } from '../data/options';
 import ProfileMenu from './ProfileMenu';
@@ -24,6 +25,9 @@ export default function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
   const currentPage = location.pathname.split('/')[2];
+  const email = useMyInfoStore((state) => state.email);
+  const name = useMyInfoStore((state) => state.name);
+  const company = useMyInfoStore((state) => state.company);
 
   const handleSelectChange = (value: string) => {
     navigate(`/${value}/${NAV_PATH.COMPAIGNS}`);
@@ -60,7 +64,7 @@ export default function Layout() {
         <div className="flex flex-1 justify-end">
           <ul className="flex items-center">
             <li>
-              <ProfileMenu />
+              <ProfileMenu name={name} email={email} company={company} />
             </li>
             <li className="ml-4">
               <Select options={options} defaultValue={role} onChange={handleSelectChange} />

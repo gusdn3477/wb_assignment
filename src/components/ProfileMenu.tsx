@@ -1,6 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
+import { Company } from '@/types';
 
-const ProfileMenu = () => {
+interface ProfileMenuProps {
+  name: string;
+  email: string;
+  company: Company;
+}
+
+const ProfileMenu = ({ name, email, company }: ProfileMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const menuRef = useRef<HTMLDivElement>(null);
@@ -31,7 +38,7 @@ const ProfileMenu = () => {
   return (
     <div>
       <button className="rounded-md px-2 py-2 text-white" onClick={openMenu}>
-        abc@abc.co.kr
+        {email}
       </button>
 
       {/* 메뉴 */}
@@ -42,9 +49,9 @@ const ProfileMenu = () => {
           style={{ top: `${position.top}px`, left: `${position.left}px` }}
         >
           <ul className="flex flex-col items-center justify-center py-2">
-            <li className="cursor-pointer px-4 py-2 text-xl font-bold text-black">홍길동</li>
-            <li className="cursor-pointer px-4 py-2 text-black">이메일</li>
-            <li className="cursor-pointer px-4 py-2 text-black">소속</li>
+            <li className="cursor-pointer px-4 py-2 text-xl font-bold text-black">{name}</li>
+            <li className="cursor-pointer px-4 py-2 text-black">{email}</li>
+            <li className="cursor-pointer px-4 py-2 text-black">{company.name}</li>
           </ul>
         </div>
       )}
